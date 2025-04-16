@@ -59,7 +59,7 @@ class AuthController {
       .json(
         new ApiResponse(
           200,
-          { fullName, email, token: verifyEmailToken },
+          { fullName, email },
           'The verification email has been sent successfully to the provided email address.'
         )
       )
