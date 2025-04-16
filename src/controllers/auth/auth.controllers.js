@@ -196,7 +196,7 @@ class AuthController {
 
     await this.notificationService.send({
       to: email,
-      subject: 'Reset Your BL Sheet Password',
+      subject: 'Reset Your WeDoGood Password',
       text: emailText,
       html: emailHTML,
     })
