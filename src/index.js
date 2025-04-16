@@ -12,7 +12,7 @@ import { asyncHandler } from './utils/index.js'
 import { ApiResponse } from './utils/index.js'
 import { errorHandler, morganMiddleware } from './middlewares/index.js'
 
-import { authRoutes } from './routes/index.js'
+import { authRoutes, chatBotRoutes } from './routes/index.js'
 import { UserModel } from './models/index.js'
 import { TokenService } from './services/index.js'
 
@@ -102,8 +102,6 @@ app.get(
   })
 )
 
-app.use('/api/v1/auth', authRoutes)
-
 app.get(
   '/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
@@ -118,6 +116,8 @@ app.get(
     res.redirect(`${ENV.FRONTEND_URL}/auth/verify?token=${token}`)
   }
 )
+app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/chatBot', chatBotRoutes)
 
 const startServer = async () => {
   const PORT = ENV.PORT || 5500

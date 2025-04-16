@@ -6,6 +6,8 @@ import NotificationService from './shared/notification.services.js'
 import MailgenService from './shared/mailgon.services.js'
 import UploadService from './shared/upload.services.js'
 
+import ChatBotService from './bots/chat-bot.services.js'
+
 export {
   UserService,
   TokenService,
@@ -13,4 +15,5 @@ export {
   NotificationService,
   MailgenService,
   UploadService,
+  ChatBotService,
 }
