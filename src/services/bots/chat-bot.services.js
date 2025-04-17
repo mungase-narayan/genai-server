@@ -10,7 +10,8 @@ class ChatBotService {
   async getChatBots(userId, { page, limit }) {
     const pipeline = [
       { $match: { userId: new mongoose.Types.ObjectId(userId) } },
-      { $project: { _id: 1 } },
+      { $sort: { createdAt: -1 } },
+      { $project: { _id: 1, title: 1, tag: 1, createdAt: 1 } },
     ]
 
     const chatBots = await this.chatBotModel.aggregatePaginate(
