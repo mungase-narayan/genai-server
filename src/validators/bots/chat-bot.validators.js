@@ -11,6 +11,15 @@ export const getBotsQueryValidator = checkSchema(
       },
     },
 
+    isCompleted: {
+      customSanitizer: {
+        options: (value) => {
+          if (value === 'false') return false
+          return true
+        },
+      },
+    },
+
     page: {
       customSanitizer: {
         options: (value) => {

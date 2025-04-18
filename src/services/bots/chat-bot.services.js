@@ -7,9 +7,12 @@ class ChatBotService {
     this.chatBotModel = chatBotModel
   }
 
-  async getChatBots(userId, { page, limit }) {
+  async getChatBots(userId, { page, limit, isCompleted }) {
     const pipeline = [
       { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      ...(isCompleted
+        ? [{ $match: { title: { $nin: ['', null] } } }]
+        : [{ $match: { title: { $in: ['', null] } } }]),
       { $sort: { createdAt: -1 } },
       { $project: { _id: 1, title: 1, tag: 1, createdAt: 1 } },
     ]

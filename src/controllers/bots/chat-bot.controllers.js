@@ -9,9 +9,13 @@ class ChatBotController {
 
   async getChatBots(req, res) {
     const userId = req.user?._id
-    const { page, limit } = req.query
+    const { page, limit, isCompleted } = req.query
     this.logger.info({ msg: MSG.CHAT_BOT.GET_CHAT_BOTS, data: { userId } })
-    const bots = await this.chatBotService.getChatBots(userId, { page, limit })
+    const bots = await this.chatBotService.getChatBots(userId, {
+      page,
+      limit,
+      isCompleted,
+    })
     return res
       .status(200)
       .json(new ApiResponse(200, bots, 'Chat bots fetched successfully'))
