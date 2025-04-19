@@ -1,4 +1,4 @@
-import { checkSchema, query } from 'express-validator'
+import { body, checkSchema, query } from 'express-validator'
 
 export const getBotsQueryValidator = checkSchema(
   {
@@ -43,6 +43,15 @@ export const getBotsQueryValidator = checkSchema(
 
 export const getChatBotValidator = [
   query('chatBotId')
+    .trim()
+    .notEmpty()
+    .withMessage('Bot ID is required')
+    .isMongoId()
+    .withMessage('Bot ID is invalid'),
+]
+
+export const chatBotIdValidator = [
+  body('chatBotId')
     .trim()
     .notEmpty()
     .withMessage('Bot ID is required')

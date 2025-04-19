@@ -15,6 +15,7 @@ const MSG = {
   CHAT_BOT: {
     GET_CHAT_BOTS: 'GET_CHAT_BOTS',
     GET_CHAT_BOT: 'GET_CHAT_BOT',
+    DELET_CHAT_BOT: 'DELETE_CHAT_BOT',
   },
 }
 

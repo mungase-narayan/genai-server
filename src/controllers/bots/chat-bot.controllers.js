@@ -33,6 +33,21 @@ class ChatBotController {
       .status(200)
       .json(new ApiResponse(200, bot, 'Chat bot fetched successfully'))
   }
+
+  async deleteChatBot(req, res) {
+    const userId = req.user?._id
+    const { chatBotId } = req.body
+    this.logger.info({
+      msg: MSG.CHAT_BOT.DELET_CHAT_BOT,
+      data: { userId, chatBotId },
+    })
+    await this.chatBotService.deleteChatBot(userId, chatBotId)
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, { chatBotId }, 'Chat bot deleted successfully')
+      )
+  }
 }
 
 export default ChatBotController

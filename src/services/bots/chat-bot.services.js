@@ -38,6 +38,10 @@ class ChatBotService {
       _id: new mongoose.Types.ObjectId(chatBotId),
     })
   }
+
+  async deleteChatBot(userId, chatBotId) {
+    return await this.chatBotModel.deleteOne({ userId, _id: chatBotId })
+  }
 }
 
 export default ChatBotService
