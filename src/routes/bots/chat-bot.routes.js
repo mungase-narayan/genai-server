@@ -5,7 +5,11 @@ import { asyncHandler } from '../../utils/index.js'
 import { ChatBotController } from '../../controllers/index.js'
 import { ChatBotService } from '../../services/index.js'
 import { ChatBotModel } from '../../models/index.js'
-import { validate, verifyJWT } from '../../middlewares/index.js'
+import {
+  validate,
+  verifyJWT,
+  verifyPermission,
+} from '../../middlewares/index.js'
 import {
   chatBotIdValidator,
   getBotsQueryValidator,
@@ -37,6 +41,23 @@ chatBotRoutes.get(
   getChatBotValidator,
   validate,
   asyncHandler((req, res) => chatBotController.getChatBot(req, res))
+)
+
+chatBotRoutes.route('/admin').get(
+  verifyJWT,
+  verifyPermission(['Admin']),
+  getBotsQueryValidator,
+  validate,
+  asyncHandler((req, res) => chatBotController.getUsersChatBots(req, res))
+)
+
+chatBotRoutes.get(
+  '/getChatBotForAdmin',
+  verifyJWT,
+  verifyPermission(['Admin']),
+  getChatBotValidator,
+  validate,
+  asyncHandler((req, res) => chatBotController.getAdminChatBot(req, res))
 )
 
 export default chatBotRoutes

@@ -42,6 +42,84 @@ class ChatBotService {
   async deleteChatBot(userId, chatBotId) {
     return await this.chatBotModel.deleteOne({ userId, _id: chatBotId })
   }
+
+  async getAdminChatBots({ page, limit, isCompleted }) {
+    const pipeline = [
+      ...(isCompleted
+        ? [{ $match: { title: { $nin: ['', null] } } }]
+        : [{ $match: { title: { $in: ['', null] } } }]),
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      { $unwind: '$user' },
+      { $sort: { createdAt: -1 } },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          tag: 1,
+          createdAt: 1,
+          user: {
+            fullName: 1,
+            email: 1,
+            avatar: 1,
+          },
+        },
+      },
+    ]
+
+    const chatBots = await this.chatBotModel.aggregatePaginate(
+      this.chatBotModel.aggregate(pipeline),
+      getMongoosePaginationOptions({
+        page,
+        limit,
+        customLabels: {
+          totalDocs: 'total',
+          docs: 'bots',
+        },
+      })
+    )
+
+    return chatBots
+  }
+
+  async getAdminChatBot(chatBotId) {
+    const pipeline = [
+      { $match: { _id: new mongoose.Types.ObjectId(chatBotId) } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      { $unwind: '$user' },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          tag: 1,
+          questions: 1,
+          createdAt: 1,
+          user: {
+            fullName: 1,
+            email: 1,
+            avatar: 1,
+          },
+        },
+      },
+    ]
+
+    const result = await this.chatBotModel.aggregate(pipeline)
+    if (result.length) return result[0]
+    return null
+  }
 }
 
 export default ChatBotService
