@@ -56,13 +56,14 @@ class ChatBotService {
           as: 'user',
         },
       },
-      { $unwind: '$user' },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
       { $sort: { createdAt: -1 } },
       {
         $project: {
           _id: 1,
           title: 1,
           tag: 1,
+          email: 1,
           createdAt: 1,
           user: {
             fullName: 1,
@@ -99,12 +100,13 @@ class ChatBotService {
           as: 'user',
         },
       },
-      { $unwind: '$user' },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
       {
         $project: {
           _id: 1,
           title: 1,
           tag: 1,
+          email: 1,
           questions: 1,
           createdAt: 1,
           user: {
