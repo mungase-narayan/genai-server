@@ -8,10 +8,10 @@ class ChatBotController {
   }
 
   async getChatBots(req, res) {
-    const userId = req.user?._id
+    const email = req.user?.email
     const { page, limit, isCompleted } = req.query
-    this.logger.info({ msg: MSG.CHAT_BOT.GET_CHAT_BOTS, data: { userId } })
-    const bots = await this.chatBotService.getChatBots(userId, {
+    this.logger.info({ msg: MSG.CHAT_BOT.GET_CHAT_BOTS, data: { email } })
+    const bots = await this.chatBotService.getChatBots(email, {
       page,
       limit,
       isCompleted,
@@ -28,7 +28,7 @@ class ChatBotController {
       msg: MSG.CHAT_BOT.GET_CHAT_BOT,
       data: { userId, chatBotId },
     })
-    const bot = await this.chatBotService.getChatBot(userId, chatBotId)
+    const bot = await this.chatBotService.getChatBot(chatBotId)
     return res
       .status(200)
       .json(new ApiResponse(200, bot, 'Chat bot fetched successfully'))

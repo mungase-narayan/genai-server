@@ -7,9 +7,9 @@ class ChatBotService {
     this.chatBotModel = chatBotModel
   }
 
-  async getChatBots(userId, { page, limit, isCompleted }) {
+  async getChatBots(email, { page, limit, isCompleted }) {
     const pipeline = [
-      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $match: { email } },
       ...(isCompleted
         ? [{ $match: { title: { $nin: ['', null] } } }]
         : [{ $match: { title: { $in: ['', null] } } }]),
@@ -32,9 +32,8 @@ class ChatBotService {
     return chatBots
   }
 
-  async getChatBot(userId, chatBotId) {
+  async getChatBot(chatBotId) {
     return await this.chatBotModel.findOne({
-      userId: new mongoose.Types.ObjectId(userId),
       _id: new mongoose.Types.ObjectId(chatBotId),
     })
   }
