@@ -1,5 +1,6 @@
 import cors from 'cors'
 import express from 'express'
+import enforce from 'express-sslify'
 import passport from 'passport'
 import session from 'express-session'
 import { Strategy } from 'passport-google-oauth20'
@@ -19,6 +20,10 @@ import { TokenService } from './services/index.js'
 const tokenService = new TokenService()
 
 const app = express()
+
+if (ENV.NODE_ENV === 'production') {
+  app.use(enforce.HTTPS({ trustProtoHeader: true }))
+}
 
 const corsOption = {
   origin: '*',
