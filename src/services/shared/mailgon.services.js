@@ -9,7 +9,7 @@ class MailgenService {
       product: {
         name: 'WorkableAI',
         link: ENV.FRONTEND_URL,
-        logo: 'https://www.persona-rag.api.workableai.org/logo.png',
+        logo: ENV.LOGO,
       },
     })
   }
