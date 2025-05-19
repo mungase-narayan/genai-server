@@ -60,7 +60,7 @@ passport.use(
     {
       clientID: ENV.GOOGLE_CLIENT_ID,
       clientSecret: ENV.GOOGLE_CLIENT_SECRET,
-      callbackURL: '/auth/google/callback',
+      callbackURL: `${ENV.BACKEND_URL}/auth/google/callback`,
       scope: ['profile', 'email'],
     },
     async (_, __, profile, done) => {
