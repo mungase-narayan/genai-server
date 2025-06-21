@@ -21,17 +21,6 @@ const tokenService = new TokenService()
 
 const app = express()
 
-if (ENV.NODE_ENV === 'production') {
-  app.use(enforce.HTTPS({ trustProtoHeader: true }))
-}
-
-app.use((req, res, next) => {
-  if (req.header('x-forwarded-proto') !== 'https') {
-    return res.redirect(`https://${req.hostname}${req.url}`)
-  }
-  next()
-})
-
 const corsOption = {
   origin: '*',
   credentials: true,
