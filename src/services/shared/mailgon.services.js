@@ -7,7 +7,7 @@ class MailgenService {
     this.mailGenerator = new Mailgen({
       theme: 'default',
       product: {
-        name: 'WorkableAI',
+        name: ENV.PROJECT_NAME,
         link: ENV.FRONTEND_URL,
         logo: ENV.LOGO,
       },
@@ -18,10 +18,9 @@ class MailgenService {
     var email = {
       body: {
         name,
-        intro: "Welcome to WorkableAI We're very excited to have you on board.",
+        intro: `Welcome to ${ENV.PROJECT_NAME} We're very excited to have you on board.`,
         action: {
-          instructions:
-            'We are happy you signed up for WorkableAI. To start exploring the WorkableAI App, please confirm your email address and create password by clicking below link:',
+          instructions: `We are happy you signed up for ${ENV.PROJECT_NAME}. To start exploring the ${ENV.PROJECT_NAME} App, please confirm your email address and create password by clicking below link:`,
           button: {
             color: 'blue',
             text: 'Verify Email',
@@ -43,7 +42,7 @@ class MailgenService {
     var email = {
       body: {
         name,
-        intro: 'We received a request to reset your password on WorkableAI.',
+        intro: `We received a request to reset your password on ${ENV.PROJECT_NAME}.`,
         action: {
           instructions:
             "Click the button below to reset your password. If you didn't make this request, please ignore this email. The link below remain active for 1 hours.",

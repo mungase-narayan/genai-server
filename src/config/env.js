@@ -20,6 +20,7 @@ const {
   CLOUD_API_SECRET,
   LOGO,
   BACKEND_URL,
+  PROJECT_NAME,
 } = process.env
 
 const ENV = {
@@ -41,6 +42,7 @@ const ENV = {
   CLOUD_API_SECRET,
   LOGO,
   BACKEND_URL,
+  PROJECT_NAME,
 }
 
 export default ENV
