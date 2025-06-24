@@ -13,7 +13,7 @@ import { asyncHandler } from './utils/index.js'
 import { ApiResponse } from './utils/index.js'
 import { errorHandler, morganMiddleware } from './middlewares/index.js'
 
-import { authRoutes } from './routes/index.js'
+import { authRoutes, templateRoutes } from './routes/index.js'
 import { UserModel } from './models/index.js'
 import { TokenService } from './services/index.js'
 
@@ -118,6 +118,7 @@ app.get(
   }
 )
 app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/template', templateRoutes)
 
 const startServer = async () => {
   const PORT = ENV.PORT || 5500
