@@ -18,6 +18,10 @@ class UserService {
   updateUser(userId, updatedUser) {
     return this.userModel.findByIdAndUpdate(userId, updatedUser, { new: true })
   }
+
+  getAllUsers() {
+    return this.userModel.find()
+  }
 }
 
 export default UserService
