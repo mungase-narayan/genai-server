@@ -32,6 +32,25 @@ class AuthController {
     if (existedUser)
       throw new ApiError(409, 'User with email already exists.', [])
 
+    await this.userService.createUser({
+      email,
+      fullName,
+      userLoginType: UserLoginType.EMAIL_PASSWORD,
+      password: null,
+    })
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { fullName, email },
+          'The verification email has been sent successfully to the provided email address.'
+        )
+      )
+
+    // Changed Logic
+
     const EXP = '10m'
     const verifyEmailToken = await this.tokenService.signToken(
       { user: { fullName, email } },
@@ -65,6 +84,56 @@ class AuthController {
       )
   }
 
+  async invitation(req, res) {
+    const { userId } = req.body
+
+    this.logger.info({
+      msg: MSG.AUTH.USER_VERIFIED,
+      data: { userId },
+    })
+
+    const existedUser = await this.userService.getUserById(userId)
+    if (!existedUser) throw new ApiError(404, 'User not found!', [])
+
+    const EXP = '10m'
+    const verifyEmailToken = await this.tokenService.signToken(
+      {
+        user: {
+          fullName: existedUser.fullName,
+          email: existedUser.email,
+          userId: existedUser._id,
+        },
+      },
+      EXP
+    )
+
+    const verificationLink = `${ENV.FRONTEND_URL}${
+      URLS.createPasswordUrl
+    }?token=${verifyEmailToken}`
+
+    const { emailHTML, emailText } = this.mailgenService.verificationEmailHTML({
+      name: existedUser.fullName,
+      link: verificationLink,
+    })
+
+    await this.notificationService.send({
+      to: existedUser.email,
+      subject: 'Accept Invitation and Create Password',
+      text: emailText,
+      html: emailHTML,
+    })
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { fullName: existedUser.fullName, email: existedUser.email },
+          'The verification email has been sent successfully to the provided email address.'
+        )
+      )
+  }
+
   async verifyEmailAndCreatePassword(req, res) {
     const { password, token } = req.body
 
@@ -85,16 +154,14 @@ class AuthController {
     const existedUser = await this.userService.getUserByEmail(
       decodedToken?.user?.email
     )
-    if (existedUser)
+    if (existedUser.isVerified)
       throw new ApiError(409, 'User with email already exists.', [])
 
     const hashedPassword = await this.hashService.hashData(password)
 
-    const user = await this.userService.createUser({
-      email: decodedToken.user.email,
-      fullName: decodedToken.user.fullName,
+    const user = await this.userService.updateUser(existedUser._id, {
       password: hashedPassword,
-      userLoginType: UserLoginType.EMAIL_PASSWORD,
+      isVerified: true,
     })
 
     this.logger.info({
@@ -134,6 +201,12 @@ class AuthController {
 
     const user = await this.userService.getUserByEmail(email)
     if (!user) throw new ApiError(401, 'User not found with this email.', [])
+
+    if (!user?.isVerified)
+      throw new ApiError(
+        403,
+        'Your account must be verified to access this resource.'
+      )
 
     if (user?.userLoginType !== UserLoginType.EMAIL_PASSWORD) {
       throw new ApiError(404, 'You need to log in using Google to continue.')
@@ -176,6 +249,12 @@ class AuthController {
 
     const user = await this.userService.getUserByEmail(email)
     if (!user) throw new ApiError(409, 'User with email not exists.')
+
+    if (!user?.isVerified)
+      throw new ApiError(
+        403,
+        'Your account must be verified to access this resource.'
+      )
 
     const EXP = '2 days'
     const resetPasswordToken = await this.tokenService.signToken(
@@ -233,6 +312,12 @@ class AuthController {
       decodedToken?.user?.email
     )
     if (!user) throw new ApiError(409, 'User with email not exists.', [])
+
+    if (!user?.isVerified)
+      throw new ApiError(
+        403,
+        'Your account must be verified to access this resource.'
+      )
 
     this.logger.info({
       msg: MSG.AUTH.RESET_PASSWORD,
@@ -293,6 +378,12 @@ class AuthController {
     )
     if (!user) throw new ApiError(409, 'User with email not exists.', [])
 
+    if (!user?.isVerified)
+      throw new ApiError(
+        403,
+        'Your account must be verified to access this resource.'
+      )
+
     this.logger.info({
       msg: MSG.AUTH.SELF,
       data: { userId: user?._id, email: user.email },
@@ -316,6 +407,7 @@ class AuthController {
       )
     )
   }
+
   async uploadProfilePicture(req, res) {
     const userId = req?.user?._id
 
@@ -366,6 +458,13 @@ class AuthController {
           'Profile picture updated successfully.'
         )
       )
+  }
+
+  async getAllUsers(req, res) {
+    const users = await this.userService.getAllUsers()
+    return res
+      .status(200)
+      .json(new ApiResponse(200, users, 'Fetched all users'))
   }
 }
 

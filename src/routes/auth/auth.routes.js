@@ -20,7 +20,12 @@ import {
   tokenValidator,
   fullNameValidator,
 } from '../../validators/auth/user.validators.js'
-import { uploader, validate, verifyJWT } from '../../middlewares/index.js'
+import {
+  uploader,
+  validate,
+  verifyJWT,
+  verifyPermission,
+} from '../../middlewares/index.js'
 
 const authRoutes = express.Router()
 const userService = new UserService(UserModel)
@@ -98,6 +103,20 @@ authRoutes.patch(
   verifyJWT,
   fullNameValidator,
   asyncHandler((req, res) => authController.updateFullName(req, res))
+)
+
+authRoutes.post(
+  '/invitation',
+  // verifyJWT,
+  // verifyPermission(['Admin']),
+  asyncHandler((req, res) => authController.invitation(req, res))
+)
+
+authRoutes.get(
+  '/users',
+  verifyJWT,
+  verifyPermission(['Admin']),
+  asyncHandler((req, res) => authController.getAllUsers(req, res))
 )
 
 export default authRoutes
