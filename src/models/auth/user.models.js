@@ -53,6 +53,11 @@ const userShecma = new Schema(
       type: Boolean,
       default: false,
     },
+
+    invitationCount: {
+      type: Number,
+      default: 0,
+    },
   },
 
   { timestamps: true }

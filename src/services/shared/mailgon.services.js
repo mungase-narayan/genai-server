@@ -62,6 +62,50 @@ class MailgenService {
 
     return { emailHTML, emailText }
   }
+
+  contactEmailHTML({ contact }) {
+    const { firstName, lastName, email, message, interestArea } = contact
+
+    const emailContent = {
+      body: {
+        intro: `A new contact submission was received on ${ENV.PROJECT_NAME}.`,
+        table: {
+          data: [
+            {
+              ['First Name']: firstName || 'N/A',
+              ['Last Name']: lastName || 'N/A',
+              Email: email || 'N/A',
+              Message: message || 'No message provided',
+              ['Interest Area']: interestArea,
+            },
+          ],
+          columns: {
+            customWidth: {
+              ['First Name']: '10%',
+              ['Last Name']: '10%',
+              Email: '20%',
+              ['Interest Area']: '20%',
+              Message: '40%',
+            },
+            customAlignment: {
+              ['First Name']: 'left',
+              ['Last Name']: 'left',
+              Email: 'left',
+              ['Interest Area']: 'left',
+              Message: 'left',
+            },
+          },
+        },
+        outro:
+          'You can follow up with the user directly if needed. This is an automated message.',
+      },
+    }
+
+    const emailHTML = this.mailGenerator.generate(emailContent)
+    const emailText = this.mailGenerator.generatePlaintext(emailContent)
+
+    return { emailHTML, emailText }
+  }
 }
 
 export default MailgenService

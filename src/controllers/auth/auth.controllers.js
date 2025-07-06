@@ -97,6 +97,10 @@ class AuthController {
     const existedUser = await this.userService.getUserById(userId)
     if (!existedUser) throw new ApiError(404, 'User not found!', [])
 
+    await this.userService.updateUser(userId, {
+      invitationCount: existedUser?.invitationCount + 1,
+    })
+
     const EXP = '10m'
     const verifyEmailToken = await this.tokenService.signToken(
       {
@@ -277,7 +281,7 @@ class AuthController {
 
     await this.notificationService.send({
       to: email,
-      subject: 'Reset Your WeDoGood Password',
+      subject: `Reset Your ${ENV.PROJECT_NAME} Password`,
       text: emailText,
       html: emailHTML,
     })
@@ -472,6 +476,18 @@ class AuthController {
   async contact(req, res) {
     const contact = req.body
     const createdContact = await this.contactService.create(contact)
+
+    const { emailHTML, emailText } = this.mailgenService.contactEmailHTML({
+      contact,
+    })
+
+    await this.notificationService.send({
+      to: ENV.INFO_EMAIL,
+      subject: `You've Got a New Message from a User on ${ENV.PROJECT_NAME}`,
+      text: emailText,
+      html: emailHTML,
+    })
+
     return res
       .status(201)
       .json(

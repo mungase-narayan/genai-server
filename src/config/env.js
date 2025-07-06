@@ -21,6 +21,7 @@ const {
   LOGO,
   BACKEND_URL,
   PROJECT_NAME,
+  INFO_EMAIL,
 } = process.env
 
 const ENV = {
@@ -43,6 +44,7 @@ const ENV = {
   LOGO,
   BACKEND_URL,
   PROJECT_NAME,
+  INFO_EMAIL,
 }
 
 export default ENV
