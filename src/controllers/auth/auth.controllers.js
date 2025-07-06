@@ -5,6 +5,7 @@ import { MSG, URLS, UserLoginType } from '../../constants/index.js'
 class AuthController {
   constructor(
     userService,
+    contactService,
     tokenService,
     hashService,
     notificationService,
@@ -13,6 +14,7 @@ class AuthController {
     logger
   ) {
     this.userService = userService
+    this.contactService = contactService
     this.tokenService = tokenService
     this.hashService = hashService
     this.notificationService = notificationService
@@ -465,6 +467,27 @@ class AuthController {
     return res
       .status(200)
       .json(new ApiResponse(200, users, 'Fetched all users'))
+  }
+
+  async contact(req, res) {
+    const contact = req.body
+    const createdContact = await this.contactService.create(contact)
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(
+          200,
+          createdContact,
+          'Your response stored successfully.'
+        )
+      )
+  }
+
+  async getAllContact(req, res) {
+    const contacts = await this.contactService.getContacts()
+    return res
+      .status(200)
+      .json(new ApiResponse(200, contacts, 'Fetched all contacts'))
   }
 }
 

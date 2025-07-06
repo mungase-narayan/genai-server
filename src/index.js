@@ -112,6 +112,7 @@ app.get(
   '/auth/google/callback',
   passport.authenticate('google', { session: false }),
   (req, res) => {
+    return null
     if (!req.user) return res.redirect(`${ENV.FRONTEND_URL}/auth/sign-up`)
     const token = req.user?.accessToken
     res.redirect(`${ENV.FRONTEND_URL}/auth/verify?token=${token}`)

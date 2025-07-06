@@ -1,10 +1,11 @@
 import express from 'express'
 
 import { logger } from '../../logger/index.js'
-import { UserModel } from '../../models/index.js'
+import { ContactModel, UserModel } from '../../models/index.js'
 import { asyncHandler } from '../../utils/index.js'
 import { AuthController } from '../../controllers/index.js'
 import {
+  ContactService,
   HashService,
   MailgenService,
   NotificationService,
@@ -34,9 +35,11 @@ const hashService = new HashService()
 const notificationService = new NotificationService()
 const mailgenService = new MailgenService()
 const uploadService = new UploadService()
+const contactService = new ContactService(ContactModel)
 
 const authController = new AuthController(
   userService,
+  contactService,
   tokenService,
   hashService,
   notificationService,
@@ -106,17 +109,29 @@ authRoutes.patch(
 )
 
 authRoutes.post(
-  '/invitation',
-  // verifyJWT,
-  // verifyPermission(['Admin']),
-  asyncHandler((req, res) => authController.invitation(req, res))
+  '/contact',
+  asyncHandler((req, res) => authController.contact(req, res))
 )
 
 authRoutes.get(
-  '/users',
+  '/admin/users',
   verifyJWT,
   verifyPermission(['Admin']),
   asyncHandler((req, res) => authController.getAllUsers(req, res))
+)
+
+authRoutes.get(
+  '/admin/contact',
+  verifyJWT,
+  verifyPermission(['Admin']),
+  asyncHandler((req, res) => authController.getAllContact(req, res))
+)
+
+authRoutes.post(
+  '/admin/invitation',
+  verifyJWT,
+  verifyPermission(['Admin']),
+  asyncHandler((req, res) => authController.invitation(req, res))
 )
 
 export default authRoutes
