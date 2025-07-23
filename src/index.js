@@ -1,21 +1,20 @@
 import cors from 'cors'
 import express from 'express'
-import enforce from 'express-sslify'
 import passport from 'passport'
 import session from 'express-session'
 import { Strategy } from 'passport-google-oauth20'
 
 import { ENV } from './config/index.js'
 import { connectDB } from './db/index.js'
-import { MSG, UserLoginType } from './constants/index.js'
 import { logger } from './logger/index.js'
-import { asyncHandler } from './utils/index.js'
+import { UserModel } from './models/index.js'
 import { ApiResponse } from './utils/index.js'
+import { asyncHandler } from './utils/index.js'
+import { TokenService } from './services/index.js'
+import { MSG, UserLoginType } from './constants/index.js'
 import { errorHandler, morganMiddleware } from './middlewares/index.js'
 
 import { authRoutes } from './routes/index.js'
-import { UserModel } from './models/index.js'
-import { TokenService } from './services/index.js'
 
 const tokenService = new TokenService()
 
@@ -96,7 +95,7 @@ passport.deserializeUser((user, done) => {
 
 app.get(
   '/',
-  asyncHandler((req, res, next) => {
+  asyncHandler((_, res) => {
     return res
       .status(200)
       .json(new ApiResponse(200, { msg: 'Hello from server!' }))
