@@ -16,6 +16,7 @@ import { errorHandler, morganMiddleware } from './middlewares/index.js'
 
 import { authRoutes } from './routes/index.js'
 
+
 const tokenService = new TokenService()
 
 const app = express()
@@ -111,12 +112,14 @@ app.get(
   '/auth/google/callback',
   passport.authenticate('google', { session: false }),
   (req, res) => {
+    return null
     if (!req.user) return res.redirect(`${ENV.FRONTEND_URL}/auth/sign-up`)
     const token = req.user?.accessToken
     res.redirect(`${ENV.FRONTEND_URL}/auth/verify?token=${token}`)
   }
 )
 app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/template', templateRoutes)
 
 const startServer = async () => {
   const PORT = ENV.PORT || 5500

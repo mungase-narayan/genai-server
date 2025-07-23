@@ -6,6 +6,9 @@ import NotificationService from './shared/notification.services.js'
 import MailgenService from './shared/mailgon.services.js'
 import UploadService from './shared/upload.services.js'
 
+import TemplateService from './app/template.services.js'
+import ContactService from './app/contact.services.js'
+
 export {
   UserService,
   TokenService,
@@ -13,4 +16,6 @@ export {
   NotificationService,
   MailgenService,
   UploadService,
+  TemplateService,
+  ContactService,
 }

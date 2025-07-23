@@ -3,20 +3,26 @@ class UserService {
     this.userModel = userModel
   }
 
-  getUserById(userId) {
-    return this.userModel.findById(userId)
+  async getUserById(userId) {
+    return await this.userModel.findById(userId)
   }
 
-  getUserByEmail(email) {
-    return this.userModel.findOne({ email })
+  async getUserByEmail(email) {
+    return await this.userModel.findOne({ email })
   }
 
-  createUser(user) {
-    return this.userModel.create(user)
+  async createUser(user) {
+    return await this.userModel.create(user)
   }
 
-  updateUser(userId, updatedUser) {
-    return this.userModel.findByIdAndUpdate(userId, updatedUser, { new: true })
+  async updateUser(userId, updatedUser) {
+    return await this.userModel.findByIdAndUpdate(userId, updatedUser, {
+      new: true,
+    })
+  }
+
+  async getAllUsers() {
+    return await this.userModel.find().sort({ createdAt: -1 })
   }
 }
 
