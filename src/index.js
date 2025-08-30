@@ -16,7 +16,6 @@ import { errorHandler, morganMiddleware } from './middlewares/index.js'
 
 import { authRoutes } from './routes/index.js'
 
-
 const tokenService = new TokenService()
 
 const app = express()
@@ -119,7 +118,6 @@ app.get(
   }
 )
 app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/template', templateRoutes)
 
 const startServer = async () => {
   const PORT = ENV.PORT || 5500
