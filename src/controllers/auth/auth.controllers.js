@@ -47,7 +47,7 @@ class AuthController {
         new ApiResponse(
           200,
           { fullName, email },
-          'The verification email has been sent successfully to the provided email address.'
+          'email han been sent to admin for admin for verification onsce admin verify then you will get email to create password.'
         )
       )
 

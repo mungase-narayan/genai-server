@@ -14,7 +14,7 @@ import { TokenService } from './services/index.js'
 import { MSG, UserLoginType } from './constants/index.js'
 import { errorHandler, morganMiddleware } from './middlewares/index.js'
 
-import { authRoutes } from './routes/index.js'
+import { aiConversationRoutes, authRoutes } from './routes/index.js'
 
 const tokenService = new TokenService()
 
@@ -118,6 +118,7 @@ app.get(
   }
 )
 app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/ai-conversations', aiConversationRoutes)
 
 const startServer = async () => {
   const PORT = ENV.PORT || 5500
