@@ -24,6 +24,8 @@ const {
   BACKEND_URL,
   PROJECT_NAME,
   INFO_EMAIL,
+  GROQ_API_KEY,
+  TAVILY_API_KEY,
 } = process.env
 
 const ENV = {
@@ -49,6 +51,8 @@ const ENV = {
   BACKEND_URL,
   PROJECT_NAME,
   INFO_EMAIL,
+  GROQ_API_KEY,
+  TAVILY_API_KEY,
 }
 
 export default ENV
