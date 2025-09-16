@@ -5,14 +5,10 @@ import MSG from '../../constants/msg.js'
 import ApiResponse from '../../utils/api-response.js'
 
 import { webSearch } from '../../services/shared/tool-calling.services.js'
+import { TAB_NAME_SYSTEM_PROMPT } from '../../constants/index.js'
 
 class AIConversationController {
-  constructor(
-    authService,
-    invokeService,
-    aiConversationService,
-    logger
-  ) {
+  constructor(authService, invokeService, aiConversationService, logger) {
     this.groq = new Groq({ apiKey: ENV.GROQ_API_KEY })
     this.aiConversationService = aiConversationService
     this.invokeService = invokeService
@@ -26,25 +22,55 @@ class AIConversationController {
 
     this.logger.info({
       msg: MSG.AI_CONVERSATION.CREATE_AI_CONVERSATION,
-      data: { invokeData, userId },
+      data: { ...invokeData, userId },
     })
 
-    const { chat } = invokeData
+    const { model, chat, aiConversationId } = invokeData
     const invokeResponse = await this.invokeService.create(invokeData)
 
-    const conversation = [...chat, invokeResponse]
-    const savedConversation = await this.aiConversationService.create({
-      userId,
-      chats: conversation,
-      ...(invokeData.name && { name: invokeData.name }),
-      ...(invokeData.model && { model: invokeData.model }),
-      ...(invokeData.webSearch && {
-        webSearch: invokeData.webSearch,
-      }),
-      ...(invokeData.task && { task: invokeData.task }),
-      ...(invokeData.projectId && { projectId: invokeData.projectId }),
-      ...(invokeData.assignee && { assignee: invokeData.assignee }),
+    const tabNameContent = [
+      { role: 'system', content: TAB_NAME_SYSTEM_PROMPT },
+      { role: 'user', content: chat[0].content },
+    ]
+    const tabName = await this.invokeService.create({
+      model,
+      chat: tabNameContent,
     })
+
+    const conversation = [...chat, invokeResponse]
+
+    let savedConversation
+    if (
+      !aiConversationId ||
+      aiConversationId === 'null' ||
+      aiConversationId === ''
+    ) {
+      savedConversation = await this.aiConversationService.create({
+        userId,
+        chats: conversation,
+        name: tabName.content,
+        ...(invokeData.model && { model: invokeData.model }),
+        ...(invokeData.webSearch && { webSearch: invokeData.webSearch }),
+        ...(invokeData.task && { task: invokeData.task }),
+        ...(invokeData.projectId && { projectId: invokeData.projectId }),
+        ...(invokeData.assignee && { assignee: invokeData.assignee }),
+      })
+    } else {
+      savedConversation = await this.aiConversationService.update(
+        aiConversationId,
+        {
+          userId,
+          chats: conversation,
+          name: tabName.content,
+          ...(invokeData.model && { model: invokeData.model }),
+          ...(invokeData.webSearch && { webSearch: invokeData.webSearch }),
+          ...(invokeData.task && { task: invokeData.task }),
+          ...(invokeData.projectId && { projectId: invokeData.projectId }),
+          ...(invokeData.assignee && { assignee: invokeData.assignee }),
+        }
+      )
+    }
+
     return res
       .status(201)
       .json(
