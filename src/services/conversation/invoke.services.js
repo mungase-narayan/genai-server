@@ -2,7 +2,7 @@ import Groq from 'groq-sdk'
 
 import ENV from '../../config/env.js'
 import { webSearch } from '../shared/tool-calling.services.js'
-import { WEB_SEARCH_SYSTEM_PROMPT } from '../../constants/index.js'
+import { WEB_SEARCH_SYSTEM_PROMPT } from '../../constants/prompts.js'
 
 class InvokeService {
   constructor(invokeModel) {

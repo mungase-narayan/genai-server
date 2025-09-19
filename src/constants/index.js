@@ -130,7 +130,6 @@ INSTRUCTIONS TO MODEL
 
 Now, generate a quiz based on the following user input:
 `
-export const WEB_SEARCH_SYSTEM_PROMPT = `You are a highly intelligent personal assistant. You can answer questions, provide insights, and ask follow-up questions for clarity. You have access to the following tool: webSearch({ query }): Perform real-time web searches to retrieve the latest news, updates, and information from the internet.`
 
 export const AvailableUserRoles = Object.values(UserRoles)
 export const AvailablePricingModels = Object.values(PricingModel)
