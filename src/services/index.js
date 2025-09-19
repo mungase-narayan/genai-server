@@ -11,6 +11,7 @@ import ContactService from './app/contact.services.js'
 
 import InvokeService from './conversation/invoke.services.js'
 import AIConversationService from './conversation/ai-conversation.services.js'
+import TabNameGenerationService from './shared/tab-name-generation.services.js'
 
 export {
   UserService,
@@ -23,4 +24,5 @@ export {
   ContactService,
   InvokeService,
   AIConversationService,
+  TabNameGenerationService,
 }

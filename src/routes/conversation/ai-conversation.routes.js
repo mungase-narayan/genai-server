@@ -4,6 +4,7 @@ import {
   UserService,
   InvokeService,
   AIConversationService,
+  TabNameGenerationService,
 } from '../../services/index.js'
 
 import {
@@ -21,12 +22,14 @@ const aiConversationRoutes = express.Router()
 
 const authService = new UserService(UserModel)
 const invokeService = new InvokeService(InvokeModel)
+const tabNameGenerationService = new TabNameGenerationService()
 const aiConversationService = new AIConversationService(AIConversationModel)
 
 const aiConversationController = new AIConversationController(
   authService,
   invokeService,
   aiConversationService,
+  tabNameGenerationService,
   logger
 )
 
