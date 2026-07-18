@@ -10,12 +10,14 @@ class AIConversationService {
   async update(aiConversationId, updateData) {
     const { chats, ...otherFields } = updateData
 
-    const updateQuery = {}
-    if (Object.keys(otherFields).length > 0) {
-      updateQuery.$set = otherFields
+    const updateQuery = {
+      $set: {
+        ...otherFields,
+      },
     }
-    if (chats && Array.isArray(chats) && chats.length > 0) {
-      updateQuery.$push = { chats: { $each: chats } }
+
+    if (Array.isArray(chats)) {
+      updateQuery.$set.chats = chats
     }
 
     return await this.aiConversationModel.findByIdAndUpdate(
